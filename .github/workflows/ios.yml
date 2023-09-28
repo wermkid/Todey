@@ -1,4 +1,4 @@
-name: CICD Demo
+name: mainDev
 on:
  push:
   branches: ["main"]
