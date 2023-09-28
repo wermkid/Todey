@@ -1,17 +1,15 @@
-name: iOS starter workflow
-
+name: CICD Demo
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
+ push:
+  branches: ["main"]
+ pull_request:
+  branches: ["main"]
 jobs:
-   build-and-test:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Select Xcode
-        run: sudo Xcode-select -switch /Applications/Xcode_14.3.2.app
-      - name: Build & Test
-        run: xcodebuild clean build test -workspace ProjectName.xcworkspace -scheme SchemeName -destination 'platform=iOS Simulator,name=iPhone 14 Pro,OS=16.1'
+ build-and-test:
+  runs-on: ios-latest
+  steps:
+    - uses: actions/checkout@v2
+    - name: Select Xcode
+      run: sudo Xcode-select -switch /Applications/Xcode_14.3.1.app
+    - name: Build & Test
+      run: xcodebuild clean build test -workspace project.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 14 Pro,OS=16.1'
