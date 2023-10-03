@@ -10,9 +10,9 @@ jobs:
   steps:
     - uses: actions/checkout@v2
     - name: Select Xcode
-      uses: actions/setup-xcode@v2
-      with:
-       xcode-version: "14.2"
+      run: |
+        sudo xcode-select --switch /Applications/Xcode_13.app # Specify the path to your Xcode version
+        sudo xcodebuild -license accept
     - name: Build & Test
       run: |
         xcodebuild clean build -workspace Todoey.xcworkspace -scheme Todoey -destination "platform=iOS Simulator,name=iPhone 12" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
