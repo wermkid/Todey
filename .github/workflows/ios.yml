@@ -15,11 +15,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # - name: Install Dependencies
-      #   run: |
-      #     gem install bundler
-      #     bundle install
-      #     bundle exec pod install
+      - name: Install Dependencies
+        run: |
+          gem install bundler
+          bundle install --path vendor/bundle
+          bundle exec pod install
 
       - name: Build & Test
         run: |
