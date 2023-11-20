@@ -1,12 +1,14 @@
 import UIKit
-import CoreData
 import RealmSwift
-class CategoryViewController: UITableViewController {
+import ChameleonFramework
+class CategoryViewController: SwipeTableViewController {
     lazy var realm = try! Realm()
     var categories : Results<Category>?
     override func viewDidLoad() {
         super.viewDidLoad()
         loadItems()
+        tableView.rowHeight = 75
+        tableView.separatorStyle = .none
     }
     // MARK: - Table View data source
     @IBAction func AddButtonPressed(_ sender: UIBarButtonItem) {
@@ -32,11 +34,25 @@ class CategoryViewController: UITableViewController {
         return categories?.count ?? 1
     }
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryItem",for: indexPath)
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
         cell.textLabel?.text = categories?[indexPath.row].categoryName ?? "Nothing to show!"
+        if categories?[indexPath.row].color == ""{
+            cell.backgroundColor = UIColor.randomFlat()
+            do{
+                try realm.write {
+                    categories?[indexPath.row].color = (cell.backgroundColor?.hexValue())!
+                }
+            }catch{
+                print(error)
+            }
+        }
+        else{
+            cell.backgroundColor=UIColor(hexString: categories![indexPath.row].color)
+        }
+//        print((categories?[indexPath.row].color)!)
         return cell
     }
-    
+//
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         performSegue(withIdentifier: "ToDoListItems", sender:self)
     }
@@ -54,12 +70,25 @@ class CategoryViewController: UITableViewController {
             })
         }catch
         {
-            print("Failed to save context",error)
+            print("Failed to save data locally, try again",error.localizedDescription)
         }
         tableView.reloadData()
     }
     func loadItems(){
         categories = realm.objects(Category.self)
         tableView.reloadData()
+    }
+    
+    override func updateModel(at indexPath: IndexPath) {
+        super.updateModel(at: indexPath)
+        if let categoryToBeRemoved = self.categories?[indexPath.row]{
+            do{
+                try self.realm.write{
+                    self.realm.delete(categoryToBeRemoved)
+                }
+            }catch{
+                print(error.localizedDescription)
+            }
+        }
     }
 }

@@ -1,6 +1,6 @@
 import UIKit
 import RealmSwift
-class TodoListViewController: UITableViewController {
+class TodoListViewController: SwipeTableViewController {
     var items:Results<ToDoListItem>?
     lazy var realm = try! Realm()
     var selectedCategory : Category?{
@@ -19,7 +19,7 @@ class TodoListViewController: UITableViewController {
         return items?.count ?? 1
     }
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "TodoItemCell",for: indexPath)
+        let cell=super.tableView(tableView, cellForRowAt: indexPath)
         cell.textLabel?.text = items?[indexPath.row].name ?? "Add ToDo"
         items?[indexPath.row].status ?? false ? (cell.accessoryType = .checkmark) : (cell.accessoryType = .none)
         return cell
@@ -42,7 +42,7 @@ class TodoListViewController: UITableViewController {
     // MARK: - Table View Data Source
     @IBAction func AddButtonPress(_ sender: UIBarButtonItem) {
         var textField = UITextField()
-        let alert = UIAlertController(title: "Add new Todo Item", message: "..", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Add new Todo Item", message: "Running, Petting a dog..", preferredStyle: .alert)
         let action = UIAlertAction(title: "Add item", style: .default) { [self] action in
             
             if let currentCategory = self.selectedCategory{
@@ -76,6 +76,18 @@ class TodoListViewController: UITableViewController {
     func loadItems(){
         items = selectedCategory?.items.sorted(byKeyPath: "name",ascending: true)
         tableView.reloadData()
+    }
+    
+    override func updateModel(at indexPath: IndexPath) {
+        if let item = items?[indexPath.row] {
+            do{
+                try realm.write {
+                    realm.delete(item)
+                }
+            }catch{
+                print(error.localizedDescription)
+            }
+        }
     }
     
 }
