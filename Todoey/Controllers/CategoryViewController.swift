@@ -10,6 +10,13 @@ class CategoryViewController: SwipeTableViewController {
         tableView.rowHeight = 75
         tableView.separatorStyle = .none
     }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        guard let navigationBar = navigationController?.navigationBar else {
+            fatalError("Navigation Bar has not yet been created, but is called.")
+        }
+        navigationBar.backgroundColor = UIColor(hexString: "#1D9BF6")
+    }
     // MARK: - Table View data source
     @IBAction func AddButtonPressed(_ sender: UIBarButtonItem) {
         var textField = UITextField()
@@ -48,6 +55,7 @@ class CategoryViewController: SwipeTableViewController {
         }
         else{
             cell.backgroundColor=UIColor(hexString: categories![indexPath.row].color)
+//            cell.textLabel?.textColor = ContrastColorOf(cell.backgroundColor, returnFlat: true)
         }
 //        print((categories?[indexPath.row].color)!)
         return cell

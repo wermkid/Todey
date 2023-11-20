@@ -93,6 +93,7 @@
                     </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
+                        <outlet property="searchBar" destination="dlm-dv-qz2" id="AFV-BR-Q30"/>
                         <outlet property="searchBarOutlet" destination="dlm-dv-qz2" id="y6b-Q7-KmP"/>
                     </connections>
                 </tableViewController>
@@ -105,8 +106,8 @@
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="1Nf-lN-PVa" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="95q-yj-JNX">
-                        <rect key="frame" x="0.0" y="59" width="393" height="44"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="95q-yj-JNX">
+                        <rect key="frame" x="0.0" y="59" width="393" height="96"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="tintColor" systemColor="opaqueSeparatorColor"/>
                         <color key="barTintColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

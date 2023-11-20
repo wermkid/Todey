@@ -1,8 +1,10 @@
 import UIKit
 import RealmSwift
+import ChameleonFramework
 class TodoListViewController: SwipeTableViewController {
     var items:Results<ToDoListItem>?
     lazy var realm = try! Realm()
+    @IBOutlet weak var searchBar: UISearchBar!
     var selectedCategory : Category?{
         didSet{
             loadItems()
@@ -12,7 +14,23 @@ class TodoListViewController: SwipeTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         loadItems()
-//        searchBar.delegate=self
+        tableView.separatorStyle = .none
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if let colorHex = selectedCategory?.color{
+            title = selectedCategory!.categoryName
+            guard let navigationBar = navigationController?.navigationBar else {
+                fatalError("Navigation Bar has not yet been created, but is called.")
+            }
+            navigationBar.tintColor =  UIColor(hexString: colorHex)
+            if let navcolor = UIColor(hexString: colorHex){
+                navigationBar.barTintColor = ContrastColorOf(navcolor, returnFlat: true)
+                navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor:ContrastColorOf(navcolor, returnFlat: true)]
+                searchBar.backgroundColor = navcolor
+            }
+        }
     }
     // MARK: - Table View Delegates
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -22,6 +40,13 @@ class TodoListViewController: SwipeTableViewController {
         let cell=super.tableView(tableView, cellForRowAt: indexPath)
         cell.textLabel?.text = items?[indexPath.row].name ?? "Add ToDo"
         items?[indexPath.row].status ?? false ? (cell.accessoryType = .checkmark) : (cell.accessoryType = .none)
+        
+        if let color = UIColor(hexString: selectedCategory!.color)?.darken(byPercentage: CGFloat(indexPath.row+1)/CGFloat(items!.count)){
+            cell.backgroundColor = color
+            cell.textLabel?.textColor = ContrastColorOf(color, returnFlat: true)
+            
+            
+        }
         return cell
     }
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
